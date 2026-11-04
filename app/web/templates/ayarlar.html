@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}{{ L.nav_ayar }}{% endblock %}
+{% block body %}
+
+<div class="head">
+  <h1>{{ L.nav_ayar }}</h1>
+  <p>{{ L.ayar_aciklama }}</p>
+</div>
+
+{% if kayit %}
+<div class="note mb">{{ L.ayar_kaydedildi }}</div>
+{% endif %}
+
+{% if test %}
+<div class="note mb {{ '' if test.ok else 'warn' }}">
+  <b>{{ L.ayar_test }}:</b> {{ test.mesaj }}
+  {% if test.saglayici %}<span class="badge {{ 'ok' if test.ok else 'bad' }}">{{ test.saglayici }}{% if test.model %} · {{ test.model }}{% endif %}</span>{% endif %}
+</div>
+{% endif %}
+
+<form method="post" action="/ayarlar">
+
+<div class="card mb">
+  <h3>{{ L.ayar_ai }}</h3>
+  <div class="row mb">
+    {% if llm_durum.acik %}
+      <span class="badge ok">{{ L.llm_var }} · {{ llm_durum.saglayici }}</span>
+      <span class="badge">{{ llm_durum.model }}</span>
+    {% else %}
+      <span class="badge warn">{{ L.llm_yok }}</span>
+      {% if llm_durum.neden %}<span class="muted small">{{ llm_durum.neden }}</span>{% endif %}
+    {% endif %}
+  </div>
+
+  <div class="field">
+    <label>{{ L.ayar_anahtar }} {% if kaynaklar.llm_api_key == 'env' %}<span class="badge">env</span>{% endif %}</label>
+    <input type="text" name="llm_api_key" placeholder="sk-ant-… / sk-… / AIza… / gsk_…"
+           value="" autocomplete="off">
+    <div class="small muted mt">
+      {% if degerler.llm_api_key %}{{ L.ayar_mevcut }}: <code>{{ degerler.llm_api_key }}</code> · {% endif %}
+      {{ L.ayar_anahtar_yardim }}
+    </div>
+  </div>
+
+  <div class="grid g3">
+    <div class="field">
+      <label>{{ L.ayar_saglayici }}</label>
+      <select name="llm_provider">
+        <option value="auto" {% if degerler.llm_provider == 'auto' %}selected{% endif %}>auto ({{ L.ayar_otomatik }})</option>
+        {% for s in saglayicilar %}
+        <option value="{{ s }}" {% if degerler.llm_provider == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+        <option value="none" {% if degerler.llm_provider == 'none' %}selected{% endif %}>none ({{ L.ayar_kapali }})</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>{{ L.ayar_model }}</label>
+      <input type="text" name="llm_model" value="{{ degerler.llm_model }}"
+             placeholder="{{ llm_durum.model }}">
+    </div>
+    <div class="field">
+      <label>{{ L.ayar_taban }}</label>
+      <input type="text" name="llm_base_url" value="{{ degerler.llm_base_url }}"
+             placeholder="{{ llm_durum.base }}">
+    </div>
+  </div>
+
+  <div class="note mb">{{ L.ayar_nerede_kullanilir }}</div>
+
+  <div class="grid g3">
+    <label class="row"><input type="checkbox" name="llm_faktor_onerisi" style="width:auto"
+      {% if degerler.llm_faktor_onerisi in ['1','true','on'] %}checked{% endif %}> {{ L.ayar_oneri }}</label>
+    <label class="row"><input type="checkbox" name="llm_aciklama" style="width:auto"
+      {% if degerler.llm_aciklama in ['1','true','on'] %}checked{% endif %}> {{ L.ayar_aciklama_ac }}</label>
+    <label class="row"><input type="checkbox" name="llm_eposta_taslagi" style="width:auto"
+      {% if degerler.llm_eposta_taslagi in ['1','true','on'] %}checked{% endif %}> {{ L.ayar_eposta_taslak }}</label>
+  </div>
+</div>
+
+<div class="card mb">
+  <h3>{{ L.ayar_hesap }}</h3>
+  <div class="grid g3">
+    <div class="field">
+      <label>{{ L.ayar_esik }} (0,50 – 0,99)</label>
+      <input type="number" step="0.01" min="0.5" max="0.99" name="confidence_threshold"
+             value="{{ degerler.confidence_threshold }}">
+      <div class="small muted mt">{{ L.ayar_esik_yardim }}</div>
+    </div>
+    <div class="field">
+      <label>{{ L.ayar_sertifika }} (€/tCO₂e)</label>
+      <input type="number" step="1" min="0" name="cbam_cert_eur"
+             value="{{ degerler.cbam_cert_eur }}">
+      <div class="small muted mt">{{ L.ayar_sertifika_yardim }}</div>
+    </div>
+    <div class="field">
+      <label>{{ L.ayar_dil }}</label>
+      <select name="default_lang">
+        {% for kod, ad in langs %}
+        <option value="{{ kod }}" {% if degerler.default_lang == kod %}selected{% endif %}>{{ ad }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="card mb">
+  <h3>{{ L.ayar_eposta }}</h3>
+  <p class="small muted">{{ L.ayar_eposta_yardim }}</p>
+  <div class="grid g3">
+    <div class="field"><label>SMTP {{ L.ayar_sunucu }}</label>
+      <input type="text" name="smtp_host" value="{{ degerler.smtp_host }}" placeholder="smtp.example.com"></div>
+    <div class="field"><label>Port</label>
+      <input type="number" name="smtp_port" value="{{ degerler.smtp_port }}"></div>
+    <div class="field"><label>{{ L.ayar_gonderen }}</label>
+      <input type="text" name="smtp_from" value="{{ degerler.smtp_from }}" placeholder="karbon@firma.com"></div>
+  </div>
+  <div class="grid g3">
+    <div class="field"><label>{{ L.ayar_kullanici }}</label>
+      <input type="text" name="smtp_user" value="{{ degerler.smtp_user }}"></div>
+    <div class="field"><label>{{ L.ayar_parola }}</label>
+      <input type="password" name="smtp_password" value="" autocomplete="off"
+             placeholder="{{ degerler.smtp_password or '' }}"></div>
+    <div class="field"><label>TLS</label>
+      <label class="row"><input type="checkbox" name="smtp_tls" style="width:auto"
+        {% if degerler.smtp_tls in ['1','true','on'] %}checked{% endif %}> STARTTLS</label></div>
+  </div>
+</div>
+
+<div class="card mb">
+  <h3>Telegram</h3>
+  <div class="grid g2">
+    <div class="field"><label>{{ L.ayar_jeton }}</label>
+      <input type="text" name="telegram_token" value="" autocomplete="off"
+             placeholder="{{ degerler.telegram_token or '123456:ABC…' }}"></div>
+    <div class="field"><label>{{ L.ayar_izinli }}</label>
+      <input type="text" name="telegram_allowed_chats" value="{{ degerler.telegram_allowed_chats }}"
+             placeholder="123456789, 987654321">
+      <div class="small muted mt">{{ L.ayar_izinli_yardim }}</div></div>
+  </div>
+</div>
+
+<div class="card mb">
+  <h3>{{ L.ayar_guvenlik }}</h3>
+  <label class="row"><input type="checkbox" name="allow_demo_reset" style="width:auto"
+    {% if degerler.allow_demo_reset in ['1','true','on'] %}checked{% endif %}> {{ L.ayar_demo }}</label>
+  <div class="note warn mt">{{ L.ayar_demo_yardim }}</div>
+</div>
+
+<div class="row mb">
+  <button class="btn" type="submit">{{ L.ayar_kaydet }}</button>
+</div>
+</form>
+
+<div class="row">
+  <form method="post" action="/ayarlar/sina"><button class="btn ghost" type="submit">{{ L.ayar_sina }}</button></form>
+  {% if degerler.llm_api_key %}
+  <form method="post" action="/ayarlar/anahtar-sil"><button class="btn danger" type="submit">{{ L.ayar_anahtar_sil }}</button></form>
+  {% endif %}
+</div>
+
+{% endblock %}

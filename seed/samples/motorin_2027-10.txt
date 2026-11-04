@@ -1,0 +1,8 @@
+ÖRNEK AKARYAKIT A.Ş.
+Fatura No: AK-202710-233
+Tarih: 20.10.2027
+Müşteri: Örnek Döküm ve Metal İşleme A.Ş. (forklift ve jeneratör)
+
+Ürün                               Miktar     Birim    Tutar (TL)
+------------------------------------------------------------------
+Motorin (dizel)                      4 600        lt     204 700.00

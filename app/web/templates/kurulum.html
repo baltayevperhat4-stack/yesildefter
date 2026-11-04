@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ L.tesis }}{% endblock %}
+{% block body %}
+<div class="head">
+  <h1>{{ L.tesis }}</h1>
+  <p>{{ L.tagline }}</p>
+</div>
+
+<div class="grid g2">
+  <div class="card">
+    <h3>{{ L.tesis }}</h3>
+    <form method="post" action="/kurulum">
+      <div class="field"><label>{{ L.tesis }}</label><input type="text" name="ad" required></div>
+      <div class="field"><label>{{ L.sektor }}</label><input type="text" name="sektor"></div>
+      <div class="grid g2">
+        <div class="field"><label>{{ L.uretim }} (ton)</label><input type="number" step="0.01" name="uretim" value="0"></div>
+        <div class="field"><label>{{ L.ihracat }} (ton)</label><input type="number" step="0.01" name="ihracat" value="0"></div>
+      </div>
+      <div class="grid g2">
+        <div class="field"><label>{{ L.yil }}</label><input type="number" name="yil" value="2027"></div>
+        <div class="field"><label>Ülke</label><input type="text" name="ulke" value="TR" maxlength="2"></div>
+      </div>
+      <button class="btn" type="submit">{{ L.onayla }}</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>{{ L.demo_yukle }}</h3>
+    <p class="small muted">{{ L.varsayim_notu }}</p>
+    <form method="post" action="/demo">
+      <button class="btn ghost" type="submit">{{ L.demo_yukle }}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ L.nav_ajan }}{% endblock %}
+{% block body %}
+<div class="head">
+  <h1>{{ L.ajan_basligi }}</h1>
+  <p>{{ L.cerceve }}</p>
+</div>
+
+<div class="card mb">
+  <div class="row">
+    <form method="post" action="/ajanlar/calistir"><button class="btn" type="submit">{{ L.calistir }}</button></form>
+    <span class="badge {{ 'info' if llm_var else '' }}">{{ L.llm_var if llm_var else L.llm_yok }}</span>
+    <span class="badge">{{ L.surum }} {{ factor_version }}</span>
+  </div>
+</div>
+
+{% if sonuclar %}
+<div class="card mb">
+  <h3>{{ L.zincir_calisti }}</h3>
+  <div class="chain">
+    {% for s in sonuclar %}
+    <div class="step {{ 'ok' if s.ok else 'bad' }}">
+      <div class="n">{{ loop.index }}</div>
+      <div style="flex:1">
+        <b>{{ et(s.agent) }}</b>
+        <p>{{ m(s.code, **(s.params or {})) if s.code else s.summary }}</p>
+        {% if s.warning_codes %}
+          <p class="small" style="color:var(--warn)">
+            {% for kod in s.warning_codes %}{{ m(kod) }}{% if not loop.last %} · {% endif %}{% endfor %}
+          </p>
+        {% elif s.warnings %}<p class="small" style="color:var(--warn)">{{ s.warnings|join(' · ') }}</p>{% endif %}
+      </div>
+      <span class="badge">{{ s.duration_ms }} ms</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="card">
+  <h3>{{ L.ajan_basligi }}</h3>
+  <div class="table-wrap">
+    <table>
+      <tr><th>{{ L.faktor }}</th><th>{{ L.ozet }}</th></tr>
+      {% for a in ajanlar %}
+      <tr><td><code>{{ a.key }}</code></td><td>{{ et(a.key) }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

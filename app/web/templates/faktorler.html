@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ L.nav_faktor }}{% endblock %}
+{% block body %}
+<div class="head">
+  <h1>{{ L.faktor_basligi }}</h1>
+  <p>{{ L.faktor_aciklama }}</p>
+</div>
+
+<div class="card">
+  <div class="row mb"><span class="badge">{{ L.surum }}: {{ factor_version }}</span>
+    <a class="btn sm ghost" href="/api/faktorler">{{ L.indir_json }}</a></div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>{{ L.faktor }}</th><th class="num">Kapsam</th><th class="num">{{ L.miktar }}</th>
+          <th>{{ L.duzey }}</th><th>{{ L.kaynak }}</th></tr>
+      {% for f in faktorler %}
+      <tr>
+        <td>{{ fad(f.key, f.name_tr) }}<div class="small muted"><code>{{ f.key }}</code></div></td>
+        <td class="num">{{ f.scope }}</td>
+        <td class="num">
+          {% if f.type == 'fuel' %}{{ f.ncv_mj_per_unit }} MJ/{{ f.unit }} · {{ f.co2_kg_per_gj }} kgCO₂/GJ
+          {% else %}{{ f.kgco2e_per_unit }} kgCO₂e/{{ f.unit }}{% endif %}
+        </td>
+        <td>{% if f.tier == 'ipcc' %}<span class="badge ok">{{ et('ipcc') }}</span>
+            {% elif f.tier == 'ulusal' %}<span class="badge info">{{ et(f.tier) }}</span>
+            {% else %}<span class="badge warn">{{ et(f.tier) }}</span>{% endif %}</td>
+        <td class="small muted">{{ kad(f.tier, f.source) }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ L.nav_belge }}{% endblock %}
+{% block body %}
+<div class="head">
+  <h1>{{ L.nav_belge }}</h1>
+  <p>{{ L.yukle_aciklama }}</p>
+</div>
+
+<div class="card mb">
+  <form method="post" action="/belgeler/yukle" enctype="multipart/form-data">
+    <div class="row">
+      <div style="flex:1; min-width:240px"><input type="file" name="dosya" required accept=".pdf,.csv,.tsv,.txt"></div>
+      <button class="btn" type="submit">{{ L.yukle }}</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>{{ L.dosya }}</th><th>{{ L.tarih }}</th><th>{{ L.yontem }}</th>
+        <th class="num">{{ L.satir }}</th><th class="num">{{ L.onay_bekleyen }}</th>
+        <th class="num">{{ L.birim_ton }}</th>
+      </tr>
+      {% for r in liste %}
+      <tr>
+        <td><a href="/belgeler/{{ r.belge.id }}">{{ r.belge.filename }}</a></td>
+        <td class="muted small">{{ r.belge.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td><span class="badge {{ 'info' if r.belge.extractor == 'llm' else '' }}">{{ et(r.belge.extractor) }}</span></td>
+        <td class="num">{{ r.satir }}</td>
+        <td class="num">{% if r.bekleyen %}<span class="badge warn">{{ r.bekleyen }}</span>{% else %}0{% endif %}</td>
+        <td class="num">{{ r.tco2e|sayi(2) }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6"><div class="empty">{{ L.bos }}</div></td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

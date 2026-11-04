@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{{ L.nav_urun }}{% endblock %}
+{% block body %}
+<div class="head">
+  <h1>{{ L.urun_basligi }}</h1>
+  <p>{{ tesis.name }} · {{ L.uretim }}: {{ tesis.production_ton|sayi(0) }} t · {{ L.ihracat }}: {{ tesis.export_ton_eu|sayi(0) }} t</p>
+</div>
+
+<div class="grid g3 mb">
+  <div class="card stat"><div class="k">{{ L.dogrudan }}</div>
+    <div class="v">{% if p.gomulu %}{{ p.gomulu.dogrudan|sayi(3) }}{% else %}—{% endif %}</div>
+    <div class="s">{{ L.gomulu_birim }}</div></div>
+  <div class="card stat"><div class="k">{{ L.dolayli }}</div>
+    <div class="v">{% if p.gomulu %}{{ p.gomulu.dolayli|sayi(3) }}{% else %}—{% endif %}</div>
+    <div class="s">{{ L.gomulu_birim }}</div></div>
+  <div class="card stat accent"><div class="k">{{ L.gomulu }}</div>
+    <div class="v">{% if p.gomulu %}{{ p.gomulu.toplam|sayi(3) }}{% else %}—{% endif %}</div>
+    <div class="s">{{ L.gomulu_birim }}</div></div>
+</div>
+
+{% if p.kacinilan %}
+<div class="card mb">
+  <h3>{{ L.kacinilan }}</h3>
+  <div class="grid g2">
+    <div class="stat accent">
+      <div class="k">{{ L.ihracat_gomulu }}</div>
+      <div class="v">{{ p.kacinilan.gomulu_tco2e|sayi(1) }}<small>{{ L.birim_ton }}</small></div>
+    </div>
+    <div class="stat accent">
+      <div class="k">{{ L.kacinilan }}</div>
+      <div class="v">{{ p.kacinilan.kacinilan_eur|sayi(0) }}<small>€/{{ L.yil }}</small></div>
+    </div>
+  </div>
+  <div class="mt"><span class="formula">{{ p.kacinilan.formul }}</span></div>
+</div>
+{% endif %}
+
+<div class="card mb">
+  <h3>{{ L.ets_durum }}</h3>
+  {% if rapor %}
+  <div class="row mb">
+    {% if rapor.payload.ets.kapsam_ici %}<span class="badge warn">{{ L.kapsam_ici }} · {{ rapor.payload.ets.kategori }}</span>
+    {% else %}<span class="badge ok">{{ L.kapsam_disi }}</span>{% endif %}
+  </div>
+  <div class="note">{{ m(rapor.payload.ets.aciklama_kodu) if rapor.payload.ets.aciklama_kodu else rapor.payload.ets.aciklama }}</div>
+  {% else %}<div class="empty">{{ L.bos }}</div>{% endif %}
+</div>
+
+<div class="card">
+  <h3>{{ L.rapor }}</h3>
+  <div class="row">
+    <a class="btn sm ghost" href="/api/cbam.csv">CBAM · {{ L.indir_csv }}</a>
+    <a class="btn sm ghost" href="/api/envanter.csv">{{ L.toplam }} · {{ L.indir_csv }}</a>
+    <a class="btn sm ghost" href="/api/rapor.xlsx">Excel</a>
+    <a class="btn sm ghost" href="/api/rapor.pdf">PDF</a>
+    <a class="btn sm ghost" href="/api/rapor">{{ L.indir_json }}</a>
+  </div>
+</div>
+{% endblock %}

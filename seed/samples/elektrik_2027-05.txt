@@ -1,0 +1,12 @@
+ÖRNEK ELEKTRİK PERAKENDE SATIŞ A.Ş.
+Fatura No: EL-202705-99134
+Fatura Tarihi: 07.05.2027
+Tesisat No: 40219883   Abone: Örnek Döküm ve Metal İşleme A.Ş.
+Okuma Dönemi: 01.05.2027 - 28.05.2027
+
+Kalem                             Miktar       Birim      Tutar (TL)
+--------------------------------------------------------------------
+Aktif enerji tüketimi             378 000       kWh       888 300.00
+Dağıtım bedeli                                               9 120 00
+--------------------------------------------------------------------
+Toplam                                                    897 420.00

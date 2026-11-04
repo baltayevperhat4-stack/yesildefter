@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="{{ lang }}" data-tema="{{ tema }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ L.app_name }}{% endblock %} · {{ L.app_name }}</title>
+<link rel="stylesheet" href="/static/app.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2335C28B'/><text x='16' y='23' font-size='18' font-family='sans-serif' font-weight='700' text-anchor='middle' fill='%2306130D'>Y</text></svg>">
+</head>
+<body>
+<div class="layout">
+
+<aside class="side">
+  <div class="brand">
+    <div class="mark">Y</div>
+    <div>
+      <b>{{ L.app_name }}</b>
+      <small>{{ L.tagline }}</small>
+    </div>
+  </div>
+
+  <nav class="menu">
+    <a href="/" class="{{ 'on' if yol == '/' }}"><span class="dot"></span>{{ L.nav_pano }}</a>
+    <a href="/belgeler" class="{{ 'on' if yol.startswith('/belgeler') }}"><span class="dot"></span>{{ L.nav_belge }}</a>
+    <a href="/denetim" class="{{ 'on' if yol == '/denetim' }}"><span class="dot"></span>{{ L.nav_denetim }}
+      {% if bekleyen_sayi %}<span class="badge warn">{{ bekleyen_sayi }}</span>{% endif %}</a>
+    <a href="/urun" class="{{ 'on' if yol == '/urun' }}"><span class="dot"></span>{{ L.nav_urun }}</a>
+    <a href="/azaltim" class="{{ 'on' if yol == '/azaltim' }}"><span class="dot"></span>{{ L.nav_azaltim }}</a>
+    <a href="/tedarik" class="{{ 'on' if yol == '/tedarik' }}"><span class="dot"></span>{{ L.nav_tedarik }}</a>
+    <a href="/ajanlar" class="{{ 'on' if yol.startswith('/ajanlar') }}"><span class="dot"></span>{{ L.nav_ajan }}</a>
+    <a href="/faktorler" class="{{ 'on' if yol == '/faktorler' }}"><span class="dot"></span>{{ L.nav_faktor }}</a>
+    <a href="/iz" class="{{ 'on' if yol == '/iz' }}"><span class="dot"></span>{{ L.nav_iz }}</a>
+    <a href="/ayarlar" class="{{ 'on' if yol.startswith('/ayarlar') }}"><span class="dot"></span>{{ L.nav_ayar }}
+      {% if llm_var %}<span class="badge ok">AI</span>{% endif %}</a>
+  </nav>
+
+  <div class="side-foot">
+    <div class="langs">
+      {% for kod, ad in langs %}
+      <a href="/dil/{{ kod }}" class="{{ 'on' if kod == lang }}" title="{{ ad }}">{{ kod|upper }}</a>
+      {% endfor %}
+    </div>
+    <div class="temalar">
+      <a href="/tema/oto" class="{{ 'on' if tema == 'oto' }}" title="{{ L.tema_oto }}">◐</a>
+      <a href="/tema/acik" class="{{ 'on' if tema == 'acik' }}" title="{{ L.tema_acik }}">☀</a>
+      <a href="/tema/koyu" class="{{ 'on' if tema == 'koyu' }}" title="{{ L.tema_koyu }}">☾</a>
+    </div>
+    <div class="meta">
+      {% if tesis %}<div>{{ tesis.name }}</div>{% endif %}
+      <div>{{ L.surum }}: {{ factor_version }}</div>
+      <div>{{ L.llm_var if llm_var else L.llm_yok }}</div>
+      <div>v{{ app_version }}</div>
+    </div>
+  </div>
+</aside>
+
+<main>
+  {% block body %}{% endblock %}
+
+  <footer class="page">
+    <span>{{ L.cerceve }}</span>
+    <span class="spacer"></span>
+    <span>{{ L.varsayim_notu }}</span>
+  </footer>
+</main>
+
+</div>
+</body>
+</html>

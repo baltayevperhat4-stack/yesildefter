@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ L.nav_azaltim }}{% endblock %}
+{% block body %}
+<div class="head">
+  <h1>{{ L.azaltim_basligi }}</h1>
+  <p>{{ L.varsayim_notu }}</p>
+</div>
+
+<div class="grid g4 mb">
+  <div class="card stat accent"><div class="k">{{ L.onlem }}</div>
+    <div class="v">{{ toplam.tco2e|sayi(0) }}<small>{{ L.birim_ton }}/{{ L.yil }}</small></div>
+    <div class="s">{{ p.azaltim_pay|yuzde(0) }} · {{ onlemler|length }}</div></div>
+  <div class="card stat"><div class="k">{{ L.yatirim }}</div>
+    <div class="v">{{ toplam.capex|sayi(0) }}<small>₺</small></div></div>
+  <div class="card stat"><div class="k">{{ L.tasarruf }}</div>
+    <div class="v">{{ toplam.tasarruf|sayi(0) }}<small>₺</small></div></div>
+  <div class="card stat"><div class="k">{{ L.geri_odeme }}</div>
+    <div class="v">{{ toplam.geri_odeme|sayi(2) }}<small>{{ L.yil }}</small></div></div>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <tr><th>{{ L.onlem_adi }}</th><th class="num">{{ L.birim_ton }}/{{ L.yil }}</th>
+          <th class="num">{{ L.yatirim }} ₺</th><th class="num">{{ L.tasarruf }} ₺</th>
+          <th class="num">{{ L.geri_odeme }}</th></tr>
+      {% for olcum in onlemler %}
+      <tr>
+        <td>{{ m('onlem.' ~ olcum.code) if olcum.code else olcum.name }}
+          <div class="small muted">{{ m('onlem.dayanak', taban=m('taban.' ~ (olcum.basis_params.taban or '').split('.')[-1]), oran=olcum.basis_params.oran) if olcum.basis_params else olcum.basis }}</div></td>
+        <td class="num">{{ olcum.tco2e_year|sayi(1) }}</td>
+        <td class="num">{{ olcum.capex_try|sayi(0) }}</td>
+        <td class="num">{{ olcum.saving_try_year|sayi(0) }}</td>
+        <td class="num"><span class="badge {{ 'ok' if olcum.payback_years <= 3 else '' }}">{{ olcum.payback_years|sayi(2) }} {{ L.yil }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5"><div class="empty">{{ L.bos }}</div></td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

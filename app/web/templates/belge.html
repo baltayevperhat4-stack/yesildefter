@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ belge.filename }}{% endblock %}
+{% block body %}
+<div class="head">
+  <h1>{{ belge.filename }}</h1>
+  <p>{{ L.tarih }}: {{ belge.uploaded_at.strftime('%Y-%m-%d %H:%M') }} · {{ L.yontem }}: {{ et(belge.extractor) }} · {{ L.durum }}: {{ et(belge.status) }}</p>
+</div>
+
+<div class="card mb">
+  <h3>{{ L.faaliyet }}</h3>
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>{{ L.faktor }}</th><th class="num">{{ L.miktar }}</th><th>{{ L.donem }}</th>
+        <th class="num">{{ L.guven }}</th><th>{{ L.durum }}</th><th>{{ L.formul }}</th>
+      </tr>
+      {% for a in satirlar %}
+      <tr>
+        <td>{{ fad(a.factor_key) }}<div class="small muted">{{ a.source_line[:70] }}</div></td>
+        <td class="num">{{ a.value|sayi(1) }} {{ a.unit }}</td>
+        <td>{{ a.period or '—' }}</td>
+        <td class="num">{{ (a.confidence*100)|yuzde(0) }}</td>
+        <td>
+          {% if a.status == 'onayli' %}<span class="badge ok">{{ et(a.status) }}</span>
+          {% elif a.status == 'onay_bekliyor' %}<span class="badge warn">{{ et(a.status) }}</span>
+          {% else %}<span class="badge bad">{{ et(a.status) }}</span>{% endif %}
+        </td>
+        <td>{% if a.emission %}<span class="formula">{{ a.emission.formula }}</span>
+          <div class="small muted mt">{{ kad(a.emission.factor_tier, a.emission.factor_source) }}</div>{% else %}—{% endif %}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6"><div class="empty">{{ L.bos }}</div></td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h3>{{ L.kaynak }}</h3>
+  <pre class="mono small" style="white-space:pre-wrap; color:var(--ink-2); margin:0">{{ belge.raw_text[:4000] }}</pre>
+</div>
+{% endblock %}

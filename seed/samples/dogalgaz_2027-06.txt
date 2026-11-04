@@ -1,0 +1,12 @@
+ÖRNEK DOĞALGAZ DAĞITIM A.Ş.
+Fatura No: DG-202706-004512
+Fatura Tarihi: 05.06.2027
+Abone: Örnek Döküm ve Metal İşleme A.Ş. - Tesis 1
+Tüketim Dönemi: 01.06.2027 - 28.06.2027
+
+Açıklama                         Miktar        Birim      Tutar (TL)
+--------------------------------------------------------------------
+Doğal gaz tüketimi                 58 000        m3       429 200.00
+Sistem kullanım bedeli                                       1 480 00
+--------------------------------------------------------------------
+Ödenecek Tutar                                            430 680.00

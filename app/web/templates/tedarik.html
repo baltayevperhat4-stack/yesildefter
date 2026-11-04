@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ L.nav_tedarik }}{% endblock %}
+{% block body %}
+<div class="head">
+  <h1>{{ L.tedarik_basligi }}</h1>
+  <p>{{ L.aciklama_tedarik }}</p>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <tr><th>{{ L.tedarikci }}</th><th>{{ L.malzeme }}</th><th>{{ L.durum }}</th>
+          <th class="num">kgCO₂e/{{ L.miktar|lower }}</th><th>{{ L.faktor }}</th></tr>
+      {% for t in liste %}
+      <tr>
+        <td>{{ t.name }}<div class="small muted">{{ t.email }}</div></td>
+        <td>{{ t.material }}</td>
+        <td>
+          {% if t.status == 'yanitladi' %}<span class="badge ok">{{ et(t.status) }}</span>
+          {% elif t.status == 'yanitsiz' %}<span class="badge bad">{{ et(t.status) }}</span>
+          {% elif t.status == 'hatirlatildi' %}<span class="badge warn">{{ et(t.status) }}</span>
+          {% else %}<span class="badge">{{ et(t.status) }}</span>{% endif %}
+          {% if t.reminder_count %}<div class="small muted">{{ t.reminder_count }}×</div>{% endif %}
+        </td>
+        <td class="num">
+          {% if t.reported_kgco2e_per_unit is not none %}
+            <span class="badge ok">{{ t.reported_kgco2e_per_unit|sayi(1) }}</span>
+          {% else %}—{% endif %}
+        </td>
+        <td>
+          <form method="post" action="/tedarik/{{ t.id }}/yanit" class="row">
+            <select name="faktor" style="width:160px">
+              <option value="">—</option>
+              {% for f in kapsam3 %}
+              <option value="{{ f.key }}" {% if f.key == t.factor_key %}selected{% endif %}>{{ fad(f.key, f.name_tr) }}</option>
+              {% endfor %}
+            </select>
+            <input type="number" step="0.01" min="0" name="deger" placeholder="kgCO₂e" style="width:110px" required>
+            <button class="btn sm ghost" type="submit">{{ L.onayla }}</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5"><div class="empty">{{ L.bos }}</div></td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

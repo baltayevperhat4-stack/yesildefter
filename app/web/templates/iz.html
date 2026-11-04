@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ L.nav_iz }}{% endblock %}
+{% block body %}
+<div class="head">
+  <h1>{{ L.iz_basligi }}</h1>
+  <p>{{ L.iz_aciklama }}</p>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <tr><th>{{ L.tarih }}</th><th>{{ L.faktor }}</th><th>{{ L.ozet }}</th></tr>
+      {% for k in kayitlar %}
+      <tr>
+        <td class="small muted">{{ k.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td><code>{{ k.action }}</code><div class="small muted">{{ k.entity }}{% if k.entity_id %} #{{ k.entity_id }}{% endif %} · {{ k.actor }}</div></td>
+        <td class="small mono muted">{{ k.detail }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3"><div class="empty">{{ L.bos }}</div></td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}
